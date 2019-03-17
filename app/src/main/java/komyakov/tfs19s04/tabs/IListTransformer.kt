@@ -5,7 +5,12 @@ import komyakov.tfs19s04.dto.NewsItem
 import komyakov.tfs19s04.utils.formatReadable
 
 interface IListTransformer {
-    fun transformList(list: ArrayList<NewsItem>): ArrayList<IBaseListItemModel> {
+    fun transformList(list: ArrayList<NewsItem>): List<IBaseListItemModel> {
+
+        if (list.size == 0) {
+            return emptyList()
+        }
+
         val sorted = list.sortedByDescending { it.timestamp }.toList() as ArrayList<NewsItem>
         sorted.add(sorted.size, sorted.last())
 

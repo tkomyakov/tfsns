@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import komyakov.tfs19s04.App
 import komyakov.tfs19s04.R
 import komyakov.tfs19s04.base.BaseFragment
-import komyakov.tfs19s04.tabs.CommonListItemModel
 import komyakov.tfs19s04.di.DataManager
+import komyakov.tfs19s04.tabs.CommonListItemModel
 import komyakov.tfs19s04.tabs.ListItemsAdapter
 
 abstract class BaseListFragment : BaseFragment() {
@@ -44,10 +44,7 @@ abstract class BaseListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        if (savedInstanceState?.get(KEY_CONTENT) == null && arguments?.get(
-                KEY_CONTENT
-            ) == null
-        ) {
+        if (savedInstanceState?.get(KEY_CONTENT) == null && arguments?.get(KEY_CONTENT) == null) {
             val data = getListData()
             (adapter as ListItemsAdapter).setData(data)
             val bundle = Bundle()
