@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Новости</string>
+    <string name="news_like">Новость добавлена в избранное</string>
+    <string name="news_dislike">Новость удалена из избранного</string>
+</resources>
