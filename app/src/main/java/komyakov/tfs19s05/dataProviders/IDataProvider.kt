@@ -8,7 +8,7 @@ interface IDataProvider {
 
     fun loadAllNews(): Flowable<List<ConsolidatedNewsItem>>
     fun loadAllNewsRaw(): Flowable<List<NewsItem>> {
-        throw UnsupportedOperationException("Readonly provider")
+        throw UnsupportedOperationException("Raw not supported by provider")
     }
     fun loadFavoriteNews(): Flowable<List<ConsolidatedNewsItem>>
     fun insertNews(newsList: List<NewsItem>)
