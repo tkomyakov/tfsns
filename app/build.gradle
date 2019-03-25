@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "komyakov.tfs19s04"
+        applicationId "komyakov.tfs19s05"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
