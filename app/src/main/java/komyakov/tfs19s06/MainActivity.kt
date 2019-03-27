@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import komyakov.tfs19s06.base.baselist.IBaseFragmentListItemCallback
 import komyakov.tfs19s06.base.baselist.IBaseListItemModel
 import komyakov.tfs19s06.di.DataManager
@@ -16,6 +18,8 @@ class MainActivity : AppCompatActivity(), NewsFragment.Callback, IBaseFragmentLi
     private val component: DataManager by lazy {
         (application as App).component
     }
+
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +38,28 @@ class MainActivity : AppCompatActivity(), NewsFragment.Callback, IBaseFragmentLi
     override fun favoriteClicked(id: String, value: Boolean) {
 
         if (value) {
-            component.markFavorite(id)
-            Toast.makeText(this, R.string.news_like, Toast.LENGTH_SHORT).show()
+            //почему обёрнуто?
+            //добавим .delay(60, TimeUnit.SECONDS) - как будто запрос выполняется долго
+            //(на самом деле это надо добавить перед удалением, в Dao)
+            //в итоге имеем долгий запрос, на который подписались тут и ещё взяли this для тоста
+            //нажмем дизлайк и покрутим устройство, понажимаем назад, включая выход- течём
+            compositeDisposable.add(component.markFavorite(id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { Toast.makeText(this, R.string.news_like, Toast.LENGTH_SHORT).show() }
+            )
             return
         }
 
-        component.unmarkFavorite(id)
-        Toast.makeText(this,    R.string.news_dislike, Toast.LENGTH_SHORT).show()
+        compositeDisposable.add(
+            component.unmarkFavorite(id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { Toast.makeText(this, R.string.news_dislike, Toast.LENGTH_SHORT).show() }
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
     }
 
     private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {

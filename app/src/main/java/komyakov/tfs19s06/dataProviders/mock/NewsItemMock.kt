@@ -1,5 +1,6 @@
 package komyakov.tfs19s06.dataProviders.mock
 
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import komyakov.tfs19s06.dataProviders.IDataProvider
 import komyakov.tfs19s06.dto.ConsolidatedNewsItem
@@ -10,11 +11,11 @@ import org.threeten.bp.ZonedDateTime
 import kotlin.random.Random
 
 class NewsItemMock : IDataProvider {
-    override fun markFavorite(id: String) {
+    override fun markFavorite(id: String): Completable {
         throw UnsupportedOperationException("Readonly provider")
     }
 
-    override fun unmarkFavorite(id: String) {
+    override fun unmarkFavorite(id: String): Completable {
         throw UnsupportedOperationException("Readonly provider")
     }
 
@@ -22,7 +23,7 @@ class NewsItemMock : IDataProvider {
         return Flowable.just(emptyList())
     }
 
-    override fun insertNews(newsList: List<NewsItem>) {
+    override fun insertNews(newsList: List<NewsItem>): Completable {
         throw UnsupportedOperationException("Readonly provider")
     }
 

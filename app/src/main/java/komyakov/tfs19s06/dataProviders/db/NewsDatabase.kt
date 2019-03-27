@@ -5,9 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.schedulers.Schedulers
 import komyakov.tfs19s06.dataProviders.IDataProvider
 import komyakov.tfs19s06.dto.ConsolidatedNewsItem
 import komyakov.tfs19s06.dto.FavoriteNewsItem
@@ -24,20 +25,23 @@ abstract class NewsDatabase : RoomDatabase(), IDataProvider {
         return favoriteNewsItemDao().loadAll()
     }
 
-    override fun markFavorite(id: String) {
-        return favoriteNewsItemDao().insert(FavoriteNewsItem(id))
+    override fun markFavorite(id: String): Completable {
+        return Completable.fromAction { favoriteNewsItemDao().insert(FavoriteNewsItem(id)) }
+            .subscribeOn(Schedulers.computation())
     }
 
-    override fun unmarkFavorite(id: String) {
-        return favoriteNewsItemDao().delete(id)
+    override fun unmarkFavorite(id: String): Completable {
+        return Completable.fromAction { favoriteNewsItemDao().delete(id) }
+            .subscribeOn(Schedulers.computation())
     }
 
     override fun loadAllNews(): Flowable<List<ConsolidatedNewsItem>> {
         return newsItemDao().loadAll()
     }
 
-    override fun insertNews(newsList: List<NewsItem>) {
-        return newsItemDao().insert(newsList)
+    override fun insertNews(newsList: List<NewsItem>): Completable {
+        return Completable.fromAction { newsItemDao().insert(newsList) }
+            .subscribeOn(Schedulers.computation())
     }
 
     companion object {
@@ -54,20 +58,11 @@ abstract class NewsDatabase : RoomDatabase(), IDataProvider {
                             it.loadAllNewsRaw()
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .firstOrError()
-                                .subscribe(object : DisposableSingleObserver<List<NewsItem>>() {
-                                    override fun onSuccess(fake: List<NewsItem>) {
-                                        instance!!.insertNews(fake)
-                                    }
-
-                                    override fun onError(e: Throwable) {
-                                        println("Error on population")
-                                    }
-                                })
+                                .flatMapCompletable { list -> instance!!.insertNews(list) }
+                                .subscribe { }
                         }
-
                     }
                 })
-                .allowMainThreadQueries()
                 .build()
 
             return instance!!
