@@ -1,6 +1,7 @@
 package komyakov.tfs19s06.dataProviders.db
 
 import android.content.Context
+import android.widget.Toast
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -8,7 +9,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.schedulers.Schedulers
+import komyakov.tfs19s06.R
 import komyakov.tfs19s06.dataProviders.IDataProvider
 import komyakov.tfs19s06.dto.ConsolidatedNewsItem
 import komyakov.tfs19s06.dto.FavoriteNewsItem
@@ -54,13 +57,16 @@ abstract class NewsDatabase : RoomDatabase(), IDataProvider {
             instance = Room.databaseBuilder(context, NewsDatabase::class.java, "database")
                 .addCallback(object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
-                        fallbackProvider?.let {
-                            it.loadAllNewsRaw()
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .firstOrError()
-                                .flatMapCompletable { list -> instance!!.insertNews(list) }
-                                .subscribe { }
-                        }
+                        fallbackProvider?.loadAllNewsRaw()
+                            ?.observeOn(AndroidSchedulers.mainThread())
+                            ?.flatMapCompletable { list -> instance!!.insertNews(list) }
+                            ?.subscribe(object : DisposableCompletableObserver() {
+                                override fun onComplete() {}
+                                override fun onError(e: Throwable) {
+                                    Toast.makeText(context, R.string.some_error_toast, Toast.LENGTH_SHORT).show()
+                                }
+
+                            })
                     }
                 })
                 .build()

@@ -12,7 +12,6 @@ import komyakov.tfs19s06.di.DataManager
 import komyakov.tfs19s06.news.NewsFragment
 import komyakov.tfs19s06.tabs.CommonListItemModel
 
-
 class MainActivity : AppCompatActivity(), NewsFragment.Callback, IBaseFragmentListItemCallback {
 
     private val component: DataManager by lazy {
