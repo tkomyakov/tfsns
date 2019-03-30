@@ -10,10 +10,10 @@ import komyakov.tfs19s06.base.baselist.IBaseListItemModel
 import komyakov.tfs19s06.base.baselist.IBaseListItemModel.Companion.TYPE_COMMON
 import komyakov.tfs19s06.base.baselist.IBaseListItemModel.Companion.TYPE_GROUP_DATE
 
-class ListItemsAdapter(private val callback: IBaseFragmentListItemCallback?) :
+class ListItemsAdapter(private val callback: IBaseFragmentListItemCallback) :
     RecyclerView.Adapter<BaseListItemHolder<*>>() {
 
-    private var dataSet = ArrayList<IBaseListItemModel>()
+    private var dataSet = mutableListOf<IBaseListItemModel>()
         set(values) {
             field = values
             notifyDataSetChanged()
@@ -59,7 +59,7 @@ class ListItemsAdapter(private val callback: IBaseFragmentListItemCallback?) :
         notifyDataSetChanged()
     }
 
-    fun getData(): ArrayList<IBaseListItemModel> {
+    fun getData(): List<IBaseListItemModel> {
         return dataSet
     }
 

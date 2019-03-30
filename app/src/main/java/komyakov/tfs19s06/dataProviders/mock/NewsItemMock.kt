@@ -34,20 +34,16 @@ class NewsItemMock : IDataProvider {
 
     override fun loadAllNewsRaw(): Single<List<NewsItem>> {
         return Single.fromCallable {
-            val list = ArrayList<NewsItem>()
             val now = ZonedDateTime.now(ZoneId.systemDefault())
-            (1..45).forEach {
-                list.add(
-                    NewsItem(
-                        id = it.toString(),
-                        title = "Lorem ipsum dolor sit amet",
-                        description = "Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident",
-                        timestamp = now.minusDays(Random.nextLong(0, 31)).format(formatFromServer)
-                    )
+            (1..45).map {
+
+                NewsItem(
+                    id = it.toString(),
+                    title = "Lorem ipsum dolor sit amet",
+                    description = "Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident",
+                    timestamp = now.minusDays(Random.nextLong(0, 31)).format(formatFromServer)
                 )
             }
-
-            list.sortedByDescending { it.timestamp }.toList()
         }
     }
 

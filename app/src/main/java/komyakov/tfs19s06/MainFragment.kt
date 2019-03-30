@@ -11,7 +11,7 @@ class MainFragment : BaseFragment() {
 
     override fun prepareView(view: View): View {
 
-        view.viewPager.adapter = MainFragmentAdapter(childFragmentManager)
+        view.viewPager.adapter = MainFragmentAdapter(childFragmentManager, context!!)
         view.tabLayout.setupWithViewPager(view.viewPager)
 
         return view

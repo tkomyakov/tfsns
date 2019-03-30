@@ -11,8 +11,8 @@ class CommonFragment : BaseListFragment(), IFragmentTabNecessary, IListTransform
 
     override val layoutId = R.layout.fragment_tab
 
-    override fun getName(): String {
-        return "Последние"
+    override fun getName(): Int {
+        return R.string.latest
     }
 
     override fun getListDataFlow(): Flowable<List<IBaseListItemModel>> {

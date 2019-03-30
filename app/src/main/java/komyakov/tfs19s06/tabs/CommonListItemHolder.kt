@@ -8,10 +8,10 @@ import kotlinx.android.synthetic.main.item_common.view.*
 
 class CommonListItemHolder(
     viewItem: View,
-    private val callback: IBaseFragmentListItemCallback?
+    private val callback: IBaseFragmentListItemCallback
 ) : BaseListItemHolder<CommonListItemModel>(viewItem) {
     fun itemClicked(item: IBaseListItemModel) {
-        callback?.listItemCLicked(item)
+        callback.listItemCLicked(item)
     }
 
     override fun bindItem(model: CommonListItemModel) {

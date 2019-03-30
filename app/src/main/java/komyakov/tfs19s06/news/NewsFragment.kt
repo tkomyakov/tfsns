@@ -25,11 +25,11 @@ class NewsFragment : BaseFragment() {
             setFavorite()
         }
 
-        return super.prepareView(view)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val item = if (savedInstanceState?.getBoolean(KEY_CONTENT) == null) {
+        val item = if (savedInstanceState?.containsKey(KEY_CONTENT) != true) {
             arguments!!.getSerializable(KEY_CONTENT) as CommonListItemModel
         } else {
             savedInstanceState.getSerializable(KEY_CONTENT) as CommonListItemModel
@@ -53,7 +53,7 @@ class NewsFragment : BaseFragment() {
         super.onSaveInstanceState(outState)
     }
 
-    override fun onAttachContext(context: Context?) {
+    override fun onAttachContext(context: Context) {
         if (context !is Callback) {
             throw IllegalArgumentException("Context must implement news callbacks!")
         }
