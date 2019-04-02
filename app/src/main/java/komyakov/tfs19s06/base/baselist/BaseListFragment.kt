@@ -48,7 +48,7 @@ abstract class BaseListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        if (savedInstanceState?.get(KEY_CONTENT) == null) {
+        if (savedInstanceState?.containsKey(KEY_CONTENT) != true) {
             arguments?.let {
                 (adapter as ListItemsAdapter)
                     .setData(arguments!!.getSerializable(KEY_CONTENT) as List<CommonListItemModel>)
