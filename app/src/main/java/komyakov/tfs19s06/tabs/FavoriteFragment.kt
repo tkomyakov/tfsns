@@ -11,8 +11,8 @@ class FavoriteFragment : BaseListFragment(), IFragmentTabNecessary, IListTransfo
 
     override val layoutId = R.layout.fragment_tab
 
-    override fun getName(): String {
-        return "Избранное"
+    override fun getName(): Int {
+        return R.string.favorite
     }
 
     override fun getListDataFlow(): Flowable<List<IBaseListItemModel>> {
