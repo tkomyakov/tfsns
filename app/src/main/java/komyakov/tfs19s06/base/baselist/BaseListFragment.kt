@@ -22,15 +22,15 @@ abstract class BaseListFragment : BaseFragment() {
         (activity!!.application as App).component
     }
 
-    lateinit var adapter: RecyclerView.Adapter<BaseListItemHolder<*>>
+    lateinit var adapter: ListItemsAdapter
 
     private var callback: IBaseFragmentListItemCallback? = null
     private val compositeDisposable = CompositeDisposable()
 
     abstract fun getListDataFlow(): Flowable<List<IBaseListItemModel>>
 
-    fun prepareList(view: View) {
-        adapter = ListItemsAdapter(callback)
+    private fun prepareList(view: View) {
+        adapter = ListItemsAdapter(callback!!)
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
         val lm = LinearLayoutManager(view.context)
 
@@ -78,11 +78,11 @@ abstract class BaseListFragment : BaseFragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putSerializable(KEY_CONTENT, (adapter as ListItemsAdapter).getData())
+        outState.putSerializable(KEY_CONTENT, ArrayList(adapter.getData()))
         super.onSaveInstanceState(outState)
     }
 
-    override fun onAttachContext(context: Context?) {
+    override fun onAttachContext(context: Context) {
         if (context !is IBaseFragmentListItemCallback) {
             throw IllegalArgumentException("Context must implement list callbacks!")
         }

@@ -16,16 +16,14 @@ abstract class BaseFragment : Fragment() {
         return prepareView(inflater.inflate(layoutId, container, false))
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         onAttachContext(context)
     }
 
-    open fun onAttachContext(context: Context?) {
+    open fun onAttachContext(context: Context) {
     }
 
-    protected open fun prepareView(view: View): View {
-        return view
-    }
+    abstract fun prepareView(view: View): View
 
 }

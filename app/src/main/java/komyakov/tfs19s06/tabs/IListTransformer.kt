@@ -11,11 +11,11 @@ interface IListTransformer {
             return emptyList()
         }
 
-        //Наверное это лишнее- апи дает как надо (но это не точно)
-        val sorted = ArrayList(list.sortedByDescending { it.timestamp }.toList())
+        //TODO: подумать - не ломать цепочку
+        val sorted = list.sortedByDescending { it.timestamp }.toMutableList()
         sorted.add(sorted.size, sorted.last())
 
-        val result = ArrayList(sorted
+        val result = sorted
             .asSequence()
             .zipWithNext { a, b ->
                 if (a.timestamp == b.timestamp) {
@@ -28,8 +28,7 @@ interface IListTransformer {
                 }
             }
             .flatMap { it }
-            .toList()
-        )
+            .toMutableList()
         result.add(0, HeaderListItemModel((result[0] as CommonListItemModel).date))
 
         return result
