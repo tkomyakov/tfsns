@@ -30,12 +30,10 @@ abstract class NewsDatabase : RoomDatabase(), IDataProvider {
 
     override fun markFavorite(id: String): Completable {
         return Completable.fromAction { favoriteNewsItemDao().insert(FavoriteNewsItem(id)) }
-            .subscribeOn(Schedulers.computation())
     }
 
     override fun unmarkFavorite(id: String): Completable {
         return Completable.fromAction { favoriteNewsItemDao().delete(id) }
-            .subscribeOn(Schedulers.computation())
     }
 
     override fun loadAllNews(): Flowable<List<ConsolidatedNewsItem>> {
@@ -44,7 +42,6 @@ abstract class NewsDatabase : RoomDatabase(), IDataProvider {
 
     override fun insertNews(newsList: List<NewsItem>): Completable {
         return Completable.fromAction { newsItemDao().insert(newsList) }
-            .subscribeOn(Schedulers.computation())
     }
 
     companion object {
