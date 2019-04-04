@@ -2,6 +2,7 @@ package komyakov.tfs19s06.tabs
 
 import androidx.fragment.app.Fragment
 import io.reactivex.Flowable
+import io.reactivex.schedulers.Schedulers
 import komyakov.tfs19s06.R
 import komyakov.tfs19s06.base.IFragmentTabNecessary
 import komyakov.tfs19s06.base.baselist.BaseListFragment
@@ -17,6 +18,7 @@ class CommonFragment : BaseListFragment(), IFragmentTabNecessary, IListTransform
 
     override fun getListDataFlow(): Flowable<List<IBaseListItemModel>> {
         return component.loadAll()
+            .subscribeOn(Schedulers.computation())
             .flatMap { newsItems ->
                 Flowable.just(transformList(newsItems))
             }
