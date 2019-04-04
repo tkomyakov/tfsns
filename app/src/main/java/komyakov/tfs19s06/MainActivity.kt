@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import komyakov.tfs19s06.base.baselist.IBaseFragmentListItemCallback
 import komyakov.tfs19s06.base.baselist.IBaseListItemModel
 import komyakov.tfs19s06.di.DataManager
@@ -42,15 +43,18 @@ class MainActivity : AppCompatActivity(), NewsFragment.Callback, IBaseFragmentLi
             //(на самом деле это надо добавить перед удалением, в Dao)
             //в итоге имеем долгий запрос, на который подписались тут и ещё взяли this для тоста
             //нажмем дизлайк и покрутим устройство, понажимаем назад, включая выход- течём
-            compositeDisposable.add(component.markFavorite(id)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { Toast.makeText(this, R.string.news_like, Toast.LENGTH_SHORT).show() }
+            compositeDisposable.add(
+                component.markFavorite(id)
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { Toast.makeText(this, R.string.news_like, Toast.LENGTH_SHORT).show() }
             )
             return
         }
 
         compositeDisposable.add(
             component.unmarkFavorite(id)
+                .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { Toast.makeText(this, R.string.news_dislike, Toast.LENGTH_SHORT).show() }
         )
