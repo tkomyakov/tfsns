@@ -22,7 +22,7 @@ abstract class BaseListFragment : BaseFragment() {
         (activity!!.application as App).component
     }
 
-    lateinit var adapter: ListItemsAdapter
+    private lateinit var adapter: ListItemsAdapter
 
     private var callback: IBaseFragmentListItemCallback? = null
     private val compositeDisposable = CompositeDisposable()
@@ -46,24 +46,23 @@ abstract class BaseListFragment : BaseFragment() {
         return view
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        if (savedInstanceState?.containsKey(KEY_CONTENT) != true) {
-            arguments?.let {
-                (adapter as ListItemsAdapter)
-                    .setData(arguments!!.getSerializable(KEY_CONTENT) as List<CommonListItemModel>)
-            }
-        } else {
-            (adapter as ListItemsAdapter).setData(
+        val list = when {
+            savedInstanceState?.containsKey(KEY_CONTENT) == true ->
                 savedInstanceState.getSerializable(KEY_CONTENT) as List<CommonListItemModel>
-            )
+            arguments?.containsKey(KEY_CONTENT) == true ->
+                arguments!!.getSerializable(KEY_CONTENT) as List<CommonListItemModel>
+            else -> emptyList()
         }
+        adapter.setData(list)
 
         compositeDisposable.add(
             getListDataFlow()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { data ->
-                    (adapter as ListItemsAdapter).setData(data)
+                    adapter.setData(data)
 
                     if (data.isEmpty()) {
                         arguments = null

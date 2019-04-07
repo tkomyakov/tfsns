@@ -10,14 +10,11 @@ import komyakov.tfs19s06.base.baselist.IBaseListItemModel
 import komyakov.tfs19s06.base.baselist.IBaseListItemModel.Companion.TYPE_COMMON
 import komyakov.tfs19s06.base.baselist.IBaseListItemModel.Companion.TYPE_GROUP_DATE
 
-class ListItemsAdapter(private val callback: IBaseFragmentListItemCallback) :
-    RecyclerView.Adapter<BaseListItemHolder<*>>() {
+class ListItemsAdapter(
+    private val callback: IBaseFragmentListItemCallback
+) : RecyclerView.Adapter<BaseListItemHolder<*>>() {
 
     private var dataSet = mutableListOf<IBaseListItemModel>()
-        set(values) {
-            field = values
-            notifyDataSetChanged()
-        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListItemHolder<*> {
         when (viewType) {
@@ -45,13 +42,9 @@ class ListItemsAdapter(private val callback: IBaseFragmentListItemCallback) :
         throw IllegalArgumentException("Unsupported type")
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return dataSet[position].type
-    }
+    override fun getItemViewType(position: Int): Int = dataSet[position].type
 
-    override fun getItemCount(): Int {
-        return dataSet.size
-    }
+    override fun getItemCount(): Int = dataSet.size
 
     fun setData(listItems: List<IBaseListItemModel>) {
         dataSet.clear()
@@ -59,9 +52,7 @@ class ListItemsAdapter(private val callback: IBaseFragmentListItemCallback) :
         notifyDataSetChanged()
     }
 
-    fun getData(): List<IBaseListItemModel> {
-        return dataSet
-    }
+    fun getData(): List<IBaseListItemModel> = dataSet
 
     override fun onBindViewHolder(holder: BaseListItemHolder<*>, position: Int) {
         val item = dataSet[position]
