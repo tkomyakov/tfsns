@@ -10,10 +10,10 @@ import io.reactivex.schedulers.Schedulers
 import komyakov.tfs19s06.base.baselist.IBaseFragmentListItemCallback
 import komyakov.tfs19s06.base.baselist.IBaseListItemModel
 import komyakov.tfs19s06.di.DataManager
-import komyakov.tfs19s06.news.NewsFragment
+import komyakov.tfs19s06.news.NewsItemFragment
 import komyakov.tfs19s06.tabs.CommonListItemModel
 
-class MainActivity : AppCompatActivity(), NewsFragment.Callback, IBaseFragmentListItemCallback {
+class MainActivity : AppCompatActivity(), NewsItemFragment.Callback, IBaseFragmentListItemCallback {
 
     private val component: DataManager by lazy {
         (application as App).component
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), NewsFragment.Callback, IBaseFragmentLi
     }
 
     override fun listItemCLicked(listItem: IBaseListItemModel) {
-        replaceFragment(NewsFragment.newInstance(listItem as CommonListItemModel), true)
+        replaceFragment(NewsItemFragment.newInstance(listItem as CommonListItemModel), true)
     }
 
     override fun favoriteClicked(id: String, value: Boolean) {

@@ -24,6 +24,8 @@ class App : Application() {
     }
 
     private fun initializeLeakDetection(appContext: Application) {
-        if (BuildConfig.DEBUG) LeakCanary.install(appContext)
+        if (BuildConfig.DEBUG) {
+            LeakCanary.install(appContext)
+        }
     }
 }

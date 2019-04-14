@@ -10,7 +10,7 @@ import komyakov.tfs19s06.tabs.CommonListItemModel
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.fragment_news.view.*
 
-class NewsFragment : BaseFragment() {
+class NewsItemFragment : BaseFragment() {
 
     override val layoutId = R.layout.fragment_news
 
@@ -67,12 +67,12 @@ class NewsFragment : BaseFragment() {
     }
 
     private fun setFavorite() {
+        //flutter style :)
         fav.setImageDrawable(
             fav.context.getDrawable(
-                if (favorite) {
-                    android.R.drawable.btn_star_big_on
-                } else {
-                    android.R.drawable.btn_star_big_off
+                when {
+                    favorite -> android.R.drawable.btn_star_big_on
+                    else -> android.R.drawable.btn_star_big_off
                 }
             )
         )
@@ -82,7 +82,7 @@ class NewsFragment : BaseFragment() {
         private const val KEY_CONTENT = "content"
 
         fun newInstance(item: CommonListItemModel): Fragment {
-            val fragment = NewsFragment()
+            val fragment = NewsItemFragment()
             fragment.arguments = Bundle()
             fragment.arguments!!.putSerializable(KEY_CONTENT, item)
             return fragment

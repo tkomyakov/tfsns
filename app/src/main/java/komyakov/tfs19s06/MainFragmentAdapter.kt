@@ -5,16 +5,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import komyakov.tfs19s06.base.IFragmentTabNecessary
-import komyakov.tfs19s06.tabs.CommonFragment
-import komyakov.tfs19s06.tabs.FavoriteFragment
+import komyakov.tfs19s06.tabs.CommonListFragment
+import komyakov.tfs19s06.tabs.FavoriteListFragment
 
 class MainFragmentAdapter(fm: FragmentManager, private val context: Context) : FragmentPagerAdapter(fm) {
 
     private val dataSet = mutableListOf<Fragment>()
 
     init {
-        dataSet.add(CommonFragment.newInstance())
-        dataSet.add(FavoriteFragment.newInstance())
+        dataSet.add(CommonListFragment.newInstance())
+        dataSet.add(FavoriteListFragment.newInstance())
     }
 
     override fun getItem(position: Int): Fragment {

@@ -15,6 +15,7 @@ import komyakov.tfs19s06.base.BaseFragment
 import komyakov.tfs19s06.di.DataManager
 import komyakov.tfs19s06.tabs.CommonListItemModel
 import komyakov.tfs19s06.tabs.ListItemsAdapter
+import kotlinx.android.synthetic.main.fragment_tab.*
 
 abstract class BaseListFragment : BaseFragment() {
 
@@ -58,20 +59,23 @@ abstract class BaseListFragment : BaseFragment() {
         }
         adapter.setData(list)
 
+        progress_indicator.show()
         compositeDisposable.add(
             getListDataFlow()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { data ->
-                    adapter.setData(data)
+                .subscribe {
+                    adapter.setData(it)
 
-                    if (data.isEmpty()) {
-                        arguments = null
-
-                    } else {
-                        val bundle = Bundle()
-                        bundle.putSerializable(KEY_CONTENT, data as ArrayList<IBaseListItemModel>)
-                        arguments = bundle
+                    when {
+                        it.isEmpty() -> arguments = null
+                        else -> {
+                            val bundle = Bundle()
+                            bundle.putSerializable(KEY_CONTENT, it as ArrayList<IBaseListItemModel>)
+                            arguments = bundle
+                        }
                     }
+
+                    progress_indicator.hide()
                 }
         )
     }
@@ -82,9 +86,11 @@ abstract class BaseListFragment : BaseFragment() {
     }
 
     override fun onAttachContext(context: Context) {
+
         if (context !is IBaseFragmentListItemCallback) {
             throw IllegalArgumentException("Context must implement list callbacks!")
         }
+
         callback = context
     }
 

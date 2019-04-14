@@ -27,7 +27,6 @@ fun formatReadable(dateString: String): String {
 
     if (compareResult in 0..1) {
         return days[compareResult.toInt()]
-
     }
 
     return date.format(formatReadable)

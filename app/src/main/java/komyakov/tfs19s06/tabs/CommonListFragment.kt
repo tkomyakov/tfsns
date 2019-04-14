@@ -8,16 +8,16 @@ import komyakov.tfs19s06.base.IFragmentTabNecessary
 import komyakov.tfs19s06.base.baselist.BaseListFragment
 import komyakov.tfs19s06.base.baselist.IBaseListItemModel
 
-class FavoriteFragment : BaseListFragment(), IFragmentTabNecessary, IListTransformer {
+class CommonListFragment : BaseListFragment(), IFragmentTabNecessary, IListTransformer {
 
     override val layoutId = R.layout.fragment_tab
 
     override fun getName(): Int {
-        return R.string.favorite
+        return R.string.latest
     }
 
     override fun getListDataFlow(): Flowable<List<IBaseListItemModel>> {
-        return component.loadFavorite()
+        return component.loadAll()
             .subscribeOn(Schedulers.computation())
             .flatMap { newsItems ->
                 Flowable.just(transformList(newsItems))
@@ -27,7 +27,7 @@ class FavoriteFragment : BaseListFragment(), IFragmentTabNecessary, IListTransfo
     companion object {
         fun newInstance(): Fragment {
 
-            return FavoriteFragment()
+            return CommonListFragment()
         }
     }
 }
