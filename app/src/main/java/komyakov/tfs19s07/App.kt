@@ -1,24 +1,21 @@
 package komyakov.tfs19s07
 
 import android.app.Application
-import android.content.Context
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
-import komyakov.tfs19s07.dataProviders.db.NewsDatabase
-import komyakov.tfs19s07.dataProviders.mock.NewsItemMock
-import komyakov.tfs19s07.di.AppComponent
-import komyakov.tfs19s07.di.DataManager
-import komyakov.tfs19s07.di.DataManagerImpl
+import komyakov.tfs19s07.data.Repo
+import komyakov.tfs19s07.data.db.NewsDatabase
+import komyakov.tfs19s07.data.network.TinkoffClient
 
-
-class ComponentImpl(context: Context) : AppComponent,
-    DataManager by DataManagerImpl(NewsDatabase.getInstance(context, NewsItemMock.getInstance()))
 
 class App : Application() {
-    val component: AppComponent by lazy { ComponentImpl(this) }
+    companion object {
+        lateinit var repo: Repo
+    }
 
     override fun onCreate() {
         super.onCreate()
+        repo = Repo(TinkoffClient, NewsDatabase.getInstance(this))
         AndroidThreeTen.init(this)
         initializeLeakDetection(this)
     }

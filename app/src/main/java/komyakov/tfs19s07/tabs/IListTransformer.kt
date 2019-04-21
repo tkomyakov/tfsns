@@ -1,29 +1,29 @@
 package komyakov.tfs19s07.tabs
 
 import komyakov.tfs19s07.base.baselist.IBaseListItemModel
-import komyakov.tfs19s07.dto.ConsolidatedNewsItem
+import komyakov.tfs19s07.dto.NewsHeader
 import komyakov.tfs19s07.utils.formatReadable
 
 interface IListTransformer {
-    fun transformList(list: List<ConsolidatedNewsItem>): List<IBaseListItemModel> {
+    fun transformList(list: List<NewsHeader>): List<IBaseListItemModel> {
 
         if (list.isEmpty()) {
             return emptyList()
         }
 
         //TODO: подумать - не ломать цепочку
-        val sorted = list.sortedByDescending { it.timestamp }.toMutableList()
+        val sorted = list.sortedByDescending { it.publicationDate.mills }.toMutableList()
         sorted.add(sorted.size, sorted.last())
 
         val result = sorted
             .asSequence()
             .zipWithNext { a, b ->
-                if (a.timestamp == b.timestamp) {
+                if (a.publicationDate.mills/86400000 == b.publicationDate.mills/86400000) {
                     sequenceOf(CommonListItemModel(a))
                 } else {
                     sequenceOf(
                         CommonListItemModel(a),
-                        HeaderListItemModel(formatReadable(b.timestamp))
+                        HeaderListItemModel(formatReadable(b.publicationDate.mills))
                     )
                 }
             }

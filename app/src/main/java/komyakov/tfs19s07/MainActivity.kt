@@ -9,15 +9,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import komyakov.tfs19s07.base.baselist.IBaseFragmentListItemCallback
 import komyakov.tfs19s07.base.baselist.IBaseListItemModel
-import komyakov.tfs19s07.di.DataManager
 import komyakov.tfs19s07.news.NewsItemFragment
 import komyakov.tfs19s07.tabs.CommonListItemModel
 
 class MainActivity : AppCompatActivity(), NewsItemFragment.Callback, IBaseFragmentListItemCallback {
-
-    private val component: DataManager by lazy {
-        (application as App).component
-    }
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -44,7 +39,7 @@ class MainActivity : AppCompatActivity(), NewsItemFragment.Callback, IBaseFragme
             //в итоге имеем долгий запрос, на который подписались тут и ещё взяли this для тоста
             //нажмем дизлайк и покрутим устройство, понажимаем назад, включая выход- течём
             compositeDisposable.add(
-                component.markFavorite(id)
+                App.repo.markFavorite(id)
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { Toast.makeText(this, R.string.news_like, Toast.LENGTH_SHORT).show() }
@@ -53,7 +48,7 @@ class MainActivity : AppCompatActivity(), NewsItemFragment.Callback, IBaseFragme
         }
 
         compositeDisposable.add(
-            component.unmarkFavorite(id)
+            App.repo.unmarkFavorite(id)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { Toast.makeText(this, R.string.news_dislike, Toast.LENGTH_SHORT).show() }

@@ -9,19 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import komyakov.tfs19s07.App
 import komyakov.tfs19s07.R
 import komyakov.tfs19s07.base.BaseFragment
-import komyakov.tfs19s07.di.DataManager
 import komyakov.tfs19s07.tabs.CommonListItemModel
 import komyakov.tfs19s07.tabs.ListItemsAdapter
 import kotlinx.android.synthetic.main.fragment_tab.*
 
 abstract class BaseListFragment : BaseFragment() {
-
-    protected val component: DataManager by lazy {
-        (activity!!.application as App).component
-    }
 
     private lateinit var adapter: ListItemsAdapter
 
@@ -32,7 +26,7 @@ abstract class BaseListFragment : BaseFragment() {
 
     private fun prepareList(view: View) {
         adapter = ListItemsAdapter(callback!!)
-        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
+        val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
         val lm = LinearLayoutManager(view.context)
 
         recyclerView.addItemDecoration(DividerItemDecoration(recyclerView.context, lm.orientation))
@@ -55,11 +49,22 @@ abstract class BaseListFragment : BaseFragment() {
                 savedInstanceState.getSerializable(KEY_CONTENT) as List<CommonListItemModel>
             arguments?.containsKey(KEY_CONTENT) == true ->
                 arguments!!.getSerializable(KEY_CONTENT) as List<CommonListItemModel>
-            else -> emptyList()
+            else -> {
+                loadDataExternal()
+                emptyList()
+            }
         }
         adapter.setData(list)
 
+        swipe_refresh.setOnRefreshListener {
+            swipe_refresh.isRefreshing = false
+            loadDataExternal()
+        }
+    }
+
+    private fun loadDataExternal() {
         progress_indicator.show()
+        compositeDisposable.clear()
         compositeDisposable.add(
             getListDataFlow()
                 .observeOn(AndroidSchedulers.mainThread())

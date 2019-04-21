@@ -35,20 +35,20 @@ class NewsItemFragment : BaseFragment() {
             savedInstanceState.getSerializable(KEY_CONTENT) as CommonListItemModel
         }
 
-        favorite = item.favorite
+        //favorite = item.favorite
         newsItemId = item.id
         setFavorite()
 
         view.itemDate.text = item.date
         view.itemTitle.text = item.title
-        view.itemDescription.text = item.description
+        //view.itemDescription.text = item.description
 
         super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         val oldItem = arguments!!.getSerializable(KEY_CONTENT) as CommonListItemModel
-        val item = CommonListItemModel(oldItem.id, oldItem.title, oldItem.description, oldItem.date, favorite)
+        val item = CommonListItemModel(oldItem.id, oldItem.title, oldItem.date)
         outState.putSerializable(KEY_CONTENT, item)
         super.onSaveInstanceState(outState)
     }

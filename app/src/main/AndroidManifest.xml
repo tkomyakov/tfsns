@@ -3,6 +3,8 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="komyakov.tfs19s07">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
             android:name="komyakov.tfs19s07.App"
             android:allowBackup="true"

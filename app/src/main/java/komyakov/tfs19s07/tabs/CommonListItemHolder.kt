@@ -16,6 +16,5 @@ class CommonListItemHolder(
 
     override fun bindItem(model: CommonListItemModel) {
         itemView.itemTitle.text = model.title
-        itemView.itemDescription.text = model.description
     }
 }

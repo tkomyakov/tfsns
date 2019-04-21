@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.appcompat.widget.LinearLayoutCompat
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -11,24 +10,11 @@
 
     <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/itemTitle"
-            style="@style/Base.TextAppearance.AppCompat.Title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit."/>
-
-    <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/itemDescription"
             style="@style/Base.TextAppearance.AppCompat.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="4"
-            app:layout_constraintStart_toStartOf="@+id/itemTitle"
-            app:layout_constraintTop_toBottomOf="@id/itemTitle"
             tools:text="Vivamus tincidunt tempus vulputate. Donec sit amet tincidunt quam. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec nec bibendum arcu. Nulla ut volutpat lacus. Curabitur non maximus tortor. Nullam eu metus a justo interdum pretium porta eu nisl. "/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

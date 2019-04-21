@@ -1,5 +1,6 @@
 package komyakov.tfs19s07.utils
 
+import org.threeten.bp.Instant
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
@@ -18,11 +19,11 @@ private val formatReadable = DateTimeFormatter.ofPattern(
 )!!
 private val dateNow = LocalDate.now(ZoneId.systemDefault())
 
-val formatFromServer = ISO_OFFSET_DATE_TIME!!
+fun formatReadable(mills: Long): String {
 
-fun formatReadable(dateString: String): String {
-
-    val date = LocalDate.parse(dateString, formatFromServer)
+    val date = Instant.ofEpochMilli(mills)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
     val compareResult = ChronoUnit.DAYS.between(date, dateNow)
 
     if (compareResult in 0..1) {
