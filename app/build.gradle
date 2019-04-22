@@ -36,7 +36,7 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:3.12.1"
     implementation "com.squareup.okhttp3:logging-interceptor:3.12.1"
 
-    //debugImplementation 'com.facebook.stetho:stetho:1.5.1'
+    debugImplementation 'com.facebook.stetho:stetho:1.5.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     //не думаю, что это будет
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'

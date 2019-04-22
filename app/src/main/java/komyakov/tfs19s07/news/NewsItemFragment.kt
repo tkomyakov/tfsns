@@ -2,8 +2,13 @@ package komyakov.tfs19s07.news
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Html
+import android.text.Spanned
 import android.view.View
 import androidx.fragment.app.Fragment
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import komyakov.tfs19s07.App
 import komyakov.tfs19s07.R
 import komyakov.tfs19s07.base.BaseFragment
 import komyakov.tfs19s07.tabs.CommonListItemModel
@@ -41,6 +46,14 @@ class NewsItemFragment : BaseFragment() {
 
         view.itemDate.text = item.date
         view.itemTitle.text = item.title
+
+        compositeDisposable.add(
+            App.repo
+                .loadArticle(newsItemId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { article -> view.itemDescription.text = fromHtml(article.text) }
+        )
         //view.itemDescription.text = item.description
 
         super.onViewCreated(view, savedInstanceState)
@@ -76,6 +89,16 @@ class NewsItemFragment : BaseFragment() {
                 }
             )
         )
+    }
+
+    private fun fromHtml(html: String): Spanned
+    {
+        val result: Spanned = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(html)
+        }
+        return result
     }
 
     companion object {

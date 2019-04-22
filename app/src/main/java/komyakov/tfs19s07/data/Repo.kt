@@ -1,12 +1,11 @@
 package komyakov.tfs19s07.data
 
-import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.Single
 import komyakov.tfs19s07.data.db.NewsDatabase
 import komyakov.tfs19s07.data.network.TinkoffClient
+import komyakov.tfs19s07.dto.Article
 import komyakov.tfs19s07.dto.NewsHeader
 
 class Repo(
@@ -14,17 +13,27 @@ class Repo(
     private val db: NewsDatabase
 ) {
     fun loadAll(): Flowable<List<NewsHeader>> {
-        api.loadNewsHeaders()
-            .subscribeOn(Schedulers.io())
-            .flatMapCompletable { db.insertHeaders(it) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({}, {})
-
-        return db.loadNewsHeaders()
+        return Flowable.mergeDelayError(
+            api.loadNewsHeaders()
+                .doOnNext {
+                    db.insertHeaders(it)
+                },
+            db.loadNewsHeaders()
+        )
     }
 
     fun loadFavorite(): Flowable<List<NewsHeader>> {
         return db.loadFavoriteHeaders()
+    }
+
+    fun loadArticle(id: String): Single<Article> {
+        return db.loadArticle(id)
+            .onErrorResumeNext {
+                api.loaArticle(id)
+                    .doOnSuccess { article ->
+                        db.insertArticle(Article(id, article.text))
+                    }
+            }
     }
 
     fun markFavorite(id: String): Completable {

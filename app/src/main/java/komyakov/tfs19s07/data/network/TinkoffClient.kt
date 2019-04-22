@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import io.reactivex.Flowable
 import io.reactivex.Single
 import komyakov.tfs19s07.BuildConfig
+import komyakov.tfs19s07.dto.Article
 import komyakov.tfs19s07.dto.NewsHeader
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -32,20 +33,14 @@ object TinkoffClient {
         service = retrofit.create(TinkoffService::class.java)
     }
 
-    fun loadNewsHeadersRaw(): Single<List<NewsHeader>> {
-        return service.news().map { it.payload }
-    }
-
     fun loadNewsHeaders(): Flowable<List<NewsHeader>> {
-        return loadNewsHeadersRaw()
-            .flatMapPublisher {
-
-                Flowable.just(it)
-            }
+        return service.news()
+            .flatMapPublisher { Flowable.just(it) }
+            .map { it.payload }
     }
 
-    fun loadFavoriteHeaders(): Flowable<List<NewsHeader>> {
-
-        return Flowable.just(emptyList())
+    fun loaArticle(id: String): Single<Article> {
+        return service.article(id)
+            .map { it.payload }
     }
 }

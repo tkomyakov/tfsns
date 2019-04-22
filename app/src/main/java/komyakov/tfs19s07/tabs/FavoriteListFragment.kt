@@ -2,7 +2,6 @@ package komyakov.tfs19s07.tabs
 
 import androidx.fragment.app.Fragment
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import komyakov.tfs19s07.App
 import komyakov.tfs19s07.R
@@ -20,12 +19,15 @@ class FavoriteListFragment : BaseListFragment(), IFragmentTabNecessary, IListTra
 
     override fun getListDataFlow(): Flowable<List<IBaseListItemModel>> {
         return App.repo.loadFavorite()
-            .subscribeOn(Schedulers.io())
+            .subscribeOn(Schedulers.computation())
             .flatMap { newsItems ->
                 Flowable.just(transformList(newsItems))
             }
     }
 
+    override fun preserveList(list: List<IBaseListItemModel>) {
+
+    }
     companion object {
         fun newInstance(): Fragment {
 

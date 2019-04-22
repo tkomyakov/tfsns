@@ -6,15 +6,17 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
+import komyakov.tfs19s07.dto.Article
 import komyakov.tfs19s07.dto.FavoriteNewsItem
 import komyakov.tfs19s07.dto.NewsHeader
 
 
-@Database(entities = [NewsHeader::class, FavoriteNewsItem::class], version = 1, exportSchema = false)
+@Database(entities = [NewsHeader::class, FavoriteNewsItem::class, Article::class], version = 1, exportSchema = false)
 abstract class NewsDatabase : RoomDatabase() {
     abstract fun newsItemDao(): NewsItemDao
-
     abstract fun favoriteNewsItemDao(): FavoriteNewsItemDao
+    abstract fun articleDao(): ArticleDao
 
     fun loadFavoriteHeaders(): Flowable<List<NewsHeader>> {
         return favoriteNewsItemDao().loadAll()
@@ -32,8 +34,16 @@ abstract class NewsDatabase : RoomDatabase() {
         return newsItemDao().loadAll()
     }
 
-    fun insertHeaders(newsList: List<NewsHeader>): Completable {
-        return Completable.fromAction { newsItemDao().insert(newsList) }
+    fun insertHeaders(newsList: List<NewsHeader>) {
+        newsItemDao().insert(newsList)
+    }
+
+    fun loadArticle(id: String): Single<Article> {
+        return articleDao().select(id)
+    }
+
+    fun insertArticle(article: Article) {
+        articleDao().insert(article)
     }
 
     companion object {

@@ -1,6 +1,7 @@
 package komyakov.tfs19s07
 
 import android.app.Application
+import com.facebook.stetho.Stetho
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
 import komyakov.tfs19s07.data.Repo
@@ -15,6 +16,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Stetho.initializeWithDefaults(this);
         repo = Repo(TinkoffClient, NewsDatabase.getInstance(this))
         AndroidThreeTen.init(this)
         initializeLeakDetection(this)

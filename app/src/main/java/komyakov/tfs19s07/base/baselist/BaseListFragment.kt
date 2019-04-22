@@ -3,12 +3,12 @@ package komyakov.tfs19s07.base.baselist
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import komyakov.tfs19s07.R
 import komyakov.tfs19s07.base.BaseFragment
 import komyakov.tfs19s07.tabs.CommonListItemModel
@@ -20,7 +20,6 @@ abstract class BaseListFragment : BaseFragment() {
     private lateinit var adapter: ListItemsAdapter
 
     private var callback: IBaseFragmentListItemCallback? = null
-    private val compositeDisposable = CompositeDisposable()
 
     abstract fun getListDataFlow(): Flowable<List<IBaseListItemModel>>
 
@@ -68,21 +67,25 @@ abstract class BaseListFragment : BaseFragment() {
         compositeDisposable.add(
             getListDataFlow()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe({
                     adapter.setData(it)
-
-                    when {
-                        it.isEmpty() -> arguments = null
-                        else -> {
-                            val bundle = Bundle()
-                            bundle.putSerializable(KEY_CONTENT, it as ArrayList<IBaseListItemModel>)
-                            arguments = bundle
-                        }
-                    }
-
+                    preserveList(it)
                     progress_indicator.hide()
-                }
+                },
+                    { Toast.makeText(context, "Ашипка", Toast.LENGTH_LONG).show() }
+                )
         )
+    }
+
+    protected open fun preserveList(list: List<IBaseListItemModel>) {
+        when {
+            list.isEmpty() -> arguments = null
+            else -> {
+                val bundle = Bundle()
+                bundle.putSerializable(KEY_CONTENT, list as ArrayList<IBaseListItemModel>)
+                arguments = bundle
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -102,11 +105,6 @@ abstract class BaseListFragment : BaseFragment() {
     override fun onDetach() {
         super.onDetach()
         callback = null
-    }
-
-    override fun onDestroyView() {
-        compositeDisposable.clear()
-        super.onDestroyView()
     }
 
     companion object {
