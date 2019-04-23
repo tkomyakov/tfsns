@@ -35,7 +35,7 @@ abstract class NewsDatabase : RoomDatabase() {
     }
 
     fun insertHeaders(newsList: List<NewsHeader>) {
-        newsItemDao().insert(newsList)
+        newsItemDao().insertOrUpdate(newsList)
     }
 
     fun loadArticle(id: String): Single<Article> {

@@ -15,9 +15,11 @@ class Repo(
     fun loadAll(): Flowable<List<NewsHeader>> {
         return Flowable.mergeDelayError(
             api.loadNewsHeaders()
-                .doOnNext {
-                    db.insertHeaders(it)
-                },
+                .map {
+                    it.sortedByDescending { elm -> elm.publicationDate.mills }
+                        .take(100)
+                }
+                .doOnNext { db.insertHeaders(it) },
             db.loadNewsHeaders()
         )
     }

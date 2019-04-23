@@ -72,7 +72,7 @@ abstract class BaseListFragment : BaseFragment() {
                     preserveList(it)
                     progress_indicator.hide()
                 },
-                    { Toast.makeText(context, "Ашипка", Toast.LENGTH_LONG).show() }
+                    { Toast.makeText(context, getString(R.string.load_error), Toast.LENGTH_LONG).show() }
                 )
         )
     }
