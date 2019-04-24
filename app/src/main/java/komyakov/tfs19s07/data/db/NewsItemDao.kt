@@ -33,4 +33,7 @@ interface NewsItemDao {
 
     @Query("select n.id, n.title, n.mills from newsheader n order by mills desc ")
     fun loadAll(): Flowable<List<NewsHeader>>
+
+    @Query("delete from newsheader where newsheader.id not in (:ids)")
+    fun trim(ids: List<String>)
 }

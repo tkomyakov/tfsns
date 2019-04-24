@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import komyakov.tfs19s07.BuildConfig
 import komyakov.tfs19s07.dto.Article
 import komyakov.tfs19s07.dto.FavoriteNewsItem
 import komyakov.tfs19s07.dto.NewsHeader
@@ -48,6 +49,16 @@ abstract class NewsDatabase : RoomDatabase() {
 
     fun getFavoriteStatus(newsItemId: String): Single<Boolean> {
         return favoriteNewsItemDao().favoriteStaus(newsItemId)
+    }
+
+    fun trim() {
+        loadNewsHeaders().map {
+            newsItemDao().trim(
+                it.take(BuildConfig.RECYCLE_POLICY).asSequence()
+                    .map { elm -> elm.id }
+                    .toList()
+            )
+        }.subscribe()
     }
 
     companion object {

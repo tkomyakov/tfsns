@@ -3,6 +3,7 @@ package komyakov.tfs19s07.data
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import komyakov.tfs19s07.BuildConfig
 import komyakov.tfs19s07.data.db.NewsDatabase
 import komyakov.tfs19s07.data.network.TinkoffClient
 import komyakov.tfs19s07.dto.Article
@@ -17,13 +18,16 @@ class Repo(
             api.loadNewsHeaders()
                 .map {
                     it.sortedByDescending { elm -> elm.publicationDate.mills }
-                        .take(100)
+                        .take(BuildConfig.RECYCLE_POLICY)
                 }
                 .onErrorReturnItem(emptyList())
                 .doOnNext {
+
                     if (it.isNotEmpty()) {
                         db.insertHeaders(it)
                     }
+
+                    db.trim()
                 },
             db.loadNewsHeaders()
         )
