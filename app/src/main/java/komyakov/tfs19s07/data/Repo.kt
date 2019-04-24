@@ -19,7 +19,12 @@ class Repo(
                     it.sortedByDescending { elm -> elm.publicationDate.mills }
                         .take(100)
                 }
-                .doOnNext { db.insertHeaders(it) },
+                .onErrorReturnItem(emptyList())
+                .doOnNext {
+                    if (it.isNotEmpty()) {
+                        db.insertHeaders(it)
+                    }
+                },
             db.loadNewsHeaders()
         )
     }
@@ -44,6 +49,10 @@ class Repo(
 
     fun unmarkFavorite(id: String): Completable {
         return db.unmarkFavorite(id)
+    }
+
+    fun getFavoriteStatus(newsItemId: String): Single<Boolean> {
+        return db.getFavoriteStatus(newsItemId)
     }
 
 }

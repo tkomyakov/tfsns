@@ -49,7 +49,7 @@ abstract class BaseListFragment : BaseFragment() {
             arguments?.containsKey(KEY_CONTENT) == true ->
                 arguments!!.getSerializable(KEY_CONTENT) as List<CommonListItemModel>
             else -> {
-                loadDataExternal()
+                requestData()
                 emptyList()
             }
         }
@@ -57,11 +57,11 @@ abstract class BaseListFragment : BaseFragment() {
 
         swipe_refresh.setOnRefreshListener {
             swipe_refresh.isRefreshing = false
-            loadDataExternal()
+            requestData()
         }
     }
 
-    private fun loadDataExternal() {
+    private fun requestData() {
         progress_indicator.show()
         compositeDisposable.clear()
         compositeDisposable.add(
@@ -108,6 +108,6 @@ abstract class BaseListFragment : BaseFragment() {
     }
 
     companion object {
-        private const val KEY_CONTENT = "content"
+        protected const val KEY_CONTENT = "content"
     }
 }

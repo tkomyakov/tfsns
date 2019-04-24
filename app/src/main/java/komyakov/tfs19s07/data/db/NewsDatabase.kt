@@ -46,6 +46,10 @@ abstract class NewsDatabase : RoomDatabase() {
         articleDao().insert(article)
     }
 
+    fun getFavoriteStatus(newsItemId: String): Single<Boolean> {
+        return favoriteNewsItemDao().favoriteStaus(newsItemId)
+    }
+
     companion object {
         private var instance: NewsDatabase? = null
 

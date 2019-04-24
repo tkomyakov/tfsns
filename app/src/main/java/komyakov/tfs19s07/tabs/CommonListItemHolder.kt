@@ -4,6 +4,7 @@ import android.view.View
 import komyakov.tfs19s07.base.baselist.BaseListItemHolder
 import komyakov.tfs19s07.base.baselist.IBaseFragmentListItemCallback
 import komyakov.tfs19s07.base.baselist.IBaseListItemModel
+import komyakov.tfs19s07.utils.fromHtml
 import kotlinx.android.synthetic.main.item_common.view.*
 
 class CommonListItemHolder(
@@ -15,6 +16,6 @@ class CommonListItemHolder(
     }
 
     override fun bindItem(model: CommonListItemModel) {
-        itemView.itemTitle.text = model.title
+        itemView.itemTitle.text = fromHtml(model.title)
     }
 }

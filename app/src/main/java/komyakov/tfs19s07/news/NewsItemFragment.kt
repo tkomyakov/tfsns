@@ -2,9 +2,9 @@ package komyakov.tfs19s07.news
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Html
-import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -12,6 +12,7 @@ import komyakov.tfs19s07.App
 import komyakov.tfs19s07.R
 import komyakov.tfs19s07.base.BaseFragment
 import komyakov.tfs19s07.tabs.CommonListItemModel
+import komyakov.tfs19s07.utils.fromHtml
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.fragment_news.view.*
 
@@ -20,6 +21,7 @@ class NewsItemFragment : BaseFragment() {
     override val layoutId = R.layout.fragment_news
 
     private lateinit var newsItemId: String
+    private var articleText: String? = null
     private var callback: Callback? = null
     private var favorite: Boolean = false
 
@@ -29,6 +31,8 @@ class NewsItemFragment : BaseFragment() {
             callback?.favoriteClicked(newsItemId, favorite)
             setFavorite()
         }
+
+        view.itemDescription.movementMethod = LinkMovementMethod.getInstance()
 
         return view
     }
@@ -40,21 +44,36 @@ class NewsItemFragment : BaseFragment() {
             savedInstanceState.getSerializable(KEY_CONTENT) as CommonListItemModel
         }
 
-        //favorite = item.favorite
         newsItemId = item.id
-        setFavorite()
 
         view.itemDate.text = item.date
         view.itemTitle.text = item.title
 
         compositeDisposable.add(
             App.repo
-                .loadArticle(newsItemId)
-                .subscribeOn(Schedulers.io())
+                .getFavoriteStatus(newsItemId)
+                .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { article -> view.itemDescription.text = fromHtml(article.text) }
+                .subscribe { isFav ->
+                    favorite = isFav
+                    setFavorite()
+                }
         )
-        //view.itemDescription.text = item.description
+
+        if (savedInstanceState?.containsKey(KEY_TEXT) == true) {
+            view.itemDescription.text = savedInstanceState.getString(KEY_TEXT)
+        } else {
+            compositeDisposable.add(
+                App.repo
+                    .loadArticle(newsItemId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ article ->
+                        view.itemDescription.text = fromHtml(article.text)
+                    },
+                        { Toast.makeText(context, getString(R.string.load_error), Toast.LENGTH_LONG).show() })
+            )
+        }
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -63,6 +82,11 @@ class NewsItemFragment : BaseFragment() {
         val oldItem = arguments!!.getSerializable(KEY_CONTENT) as CommonListItemModel
         val item = CommonListItemModel(oldItem.id, oldItem.title, oldItem.date)
         outState.putSerializable(KEY_CONTENT, item)
+
+        if (!articleText.isNullOrEmpty()) {
+            outState.putSerializable(KEY_TEXT, articleText)
+        }
+
         super.onSaveInstanceState(outState)
     }
 
@@ -91,18 +115,9 @@ class NewsItemFragment : BaseFragment() {
         )
     }
 
-    private fun fromHtml(html: String): Spanned
-    {
-        val result: Spanned = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(html)
-        }
-        return result
-    }
-
     companion object {
         private const val KEY_CONTENT = "content"
+        private const val KEY_TEXT = "text"
 
         fun newInstance(item: CommonListItemModel): Fragment {
             val fragment = NewsItemFragment()

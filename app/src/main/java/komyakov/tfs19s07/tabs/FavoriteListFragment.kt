@@ -1,5 +1,6 @@
 package komyakov.tfs19s07.tabs
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
@@ -28,6 +29,11 @@ class FavoriteListFragment : BaseListFragment(), IFragmentTabNecessary, IListTra
     override fun preserveList(list: List<IBaseListItemModel>) {
 
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        //не сохраняем список
+    }
+
     companion object {
         fun newInstance(): Fragment {
 

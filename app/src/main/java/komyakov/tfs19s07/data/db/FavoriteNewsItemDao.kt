@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Flowable
+import io.reactivex.Single
 import komyakov.tfs19s07.dto.FavoriteNewsItem
 import komyakov.tfs19s07.dto.NewsHeader
 
@@ -19,4 +20,7 @@ interface FavoriteNewsItemDao {
 
     @Query("delete from favoritenewsitem where id=:itemId")
     fun delete(itemId: String)
+
+    @Query("select exists(select 1 from favoritenewsitem WHERE id=:itemId LIMIT 1)")
+    fun favoriteStaus(itemId: String): Single<Boolean>
 }
