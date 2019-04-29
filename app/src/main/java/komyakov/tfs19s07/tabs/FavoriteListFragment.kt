@@ -22,7 +22,7 @@ class FavoriteListFragment : BaseListFragment(), IFragmentTabNecessary, IListTra
         return App.repo.loadFavorite()
             .subscribeOn(Schedulers.computation())
             .flatMap { newsItems ->
-                Flowable.just(transformList(newsItems))
+                transformList(newsItems)
             }
     }
 

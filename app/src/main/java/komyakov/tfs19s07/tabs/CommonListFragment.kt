@@ -21,7 +21,7 @@ class CommonListFragment : BaseListFragment(), IFragmentTabNecessary, IListTrans
         return App.repo.loadAll()
             .subscribeOn(Schedulers.io())
             .flatMap { newsItems ->
-                Flowable.just(transformList(newsItems))
+                transformList(newsItems)
             }
     }
 

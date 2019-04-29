@@ -26,7 +26,7 @@ interface NewsItemDao {
             }
         }
 
-        if (!updateList.isEmpty()) {
+        if (updateList.isNotEmpty()) {
             update(updateList)
         }
     }

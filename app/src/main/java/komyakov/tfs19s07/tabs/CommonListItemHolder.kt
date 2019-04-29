@@ -1,10 +1,10 @@
 package komyakov.tfs19s07.tabs
 
 import android.view.View
+import androidx.core.text.HtmlCompat
 import komyakov.tfs19s07.base.baselist.BaseListItemHolder
 import komyakov.tfs19s07.base.baselist.IBaseFragmentListItemCallback
 import komyakov.tfs19s07.base.baselist.IBaseListItemModel
-import komyakov.tfs19s07.utils.fromHtml
 import kotlinx.android.synthetic.main.item_common.view.*
 
 class CommonListItemHolder(
@@ -16,6 +16,6 @@ class CommonListItemHolder(
     }
 
     override fun bindItem(model: CommonListItemModel) {
-        itemView.itemTitle.text = fromHtml(model.title)
+        itemView.itemTitle.text = HtmlCompat.fromHtml(model.title, 0)
     }
 }

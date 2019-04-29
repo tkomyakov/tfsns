@@ -51,14 +51,19 @@ abstract class NewsDatabase : RoomDatabase() {
         return favoriteNewsItemDao().favoriteStaus(newsItemId)
     }
 
-    fun trim() {
-        loadNewsHeaders().map {
-            newsItemDao().trim(
-                it.take(BuildConfig.RECYCLE_POLICY).asSequence()
-                    .map { elm -> elm.id }
-                    .toList()
-            )
-        }.subscribe()
+    fun trim(): Completable {
+        return loadNewsHeaders()
+            .firstElement()
+            .doOnSuccess {
+                newsItemDao().trim(
+                    it.asSequence()
+                        .take(BuildConfig.RECYCLE_POLICY)
+                        .map { elm -> elm.id }
+                        .toList()
+                )
+            }
+            .ignoreElement()
+            .onErrorComplete()
     }
 
     companion object {

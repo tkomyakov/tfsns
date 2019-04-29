@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.Toast
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -12,7 +13,6 @@ import komyakov.tfs19s07.App
 import komyakov.tfs19s07.R
 import komyakov.tfs19s07.base.BaseFragment
 import komyakov.tfs19s07.tabs.CommonListItemModel
-import komyakov.tfs19s07.utils.fromHtml
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.fragment_news.view.*
 
@@ -47,7 +47,7 @@ class NewsItemFragment : BaseFragment() {
         newsItemId = item.id
 
         view.itemDate.text = item.date
-        view.itemTitle.text = item.title
+        view.itemTitle.text = HtmlCompat.fromHtml(item.title, 0)
 
         compositeDisposable.add(
             App.repo
@@ -69,7 +69,7 @@ class NewsItemFragment : BaseFragment() {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ article ->
-                        view.itemDescription.text = fromHtml(article.text)
+                        view.itemDescription.text = HtmlCompat.fromHtml(article.text, 0)
                     },
                         { Toast.makeText(context, getString(R.string.load_error), Toast.LENGTH_LONG).show() })
             )
