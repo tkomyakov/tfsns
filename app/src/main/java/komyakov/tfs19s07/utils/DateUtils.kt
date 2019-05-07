@@ -4,10 +4,11 @@ import org.threeten.bp.Instant
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
 import org.threeten.bp.temporal.ChronoUnit
 import java.util.*
+import java.util.concurrent.TimeUnit
 
+val MILLS_IN_DAY = TimeUnit.DAYS.toMillis(1)
 private const val humanReadableShort: String = "dd MMMM, yyyy"
 private val days = arrayOf("Сегодня", "Вчера")
 private val formatReadable = DateTimeFormatter.ofPattern(
@@ -19,9 +20,9 @@ private val formatReadable = DateTimeFormatter.ofPattern(
 )!!
 private val dateNow = LocalDate.now(ZoneId.systemDefault())
 
-fun formatReadable(mills: Long): String {
+fun formatReadable(units: Long, multiplier: Long = 1): String {
 
-    val date = Instant.ofEpochMilli(mills)
+    val date =  Instant.ofEpochMilli(units * multiplier)
         .atZone(ZoneId.systemDefault())
         .toLocalDate()
     val compareResult = ChronoUnit.DAYS.between(date, dateNow)
